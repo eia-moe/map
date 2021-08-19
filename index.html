@@ -8,7 +8,6 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="css/leaflet.css">
         <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
-        <link rel="stylesheet" href="css/leaflet-search.css">
         <link rel="stylesheet" href="css/leaflet-measure.css">
         <style>
         html, body, #map {
@@ -33,7 +32,6 @@
         <script src="js/labelgun.min.js"></script>
         <script src="js/labels.js"></script>
         <script src="js/leaflet-measure.js"></script>
-        <script src="js/leaflet-search.js"></script>
         <script src="data/contracts_bound_polyall_4.js"></script>
         <script>
         var highlightLayer;
@@ -132,31 +130,40 @@
             });
             var popupContent = '<table>\
                     <tr>\
-                        <td colspan="2"><strong>id</strong><br />' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">id</th>\
+                        <td>' + (feature.properties['id'] !== null ? autolinker.link(feature.properties['id'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>title</strong><br />' + (feature.properties['title'] !== null ? autolinker.link(feature.properties['title'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">title</th>\
+                        <td>' + (feature.properties['title'] !== null ? autolinker.link(feature.properties['title'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>type</strong><br />' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">type</th>\
+                        <td>' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>Ha</strong><br />' + (feature.properties['Ha'] !== null ? autolinker.link(feature.properties['Ha'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Ha</th>\
+                        <td>' + (feature.properties['Ha'] !== null ? autolinker.link(feature.properties['Ha'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>size</strong><br />' + (feature.properties['size'] !== null ? autolinker.link(feature.properties['size'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">size</th>\
+                        <td>' + (feature.properties['size'] !== null ? autolinker.link(feature.properties['size'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>Visible</strong><br />' + (feature.properties['Visible'] !== null ? autolinker.link(feature.properties['Visible'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Visible</th>\
+                        <td>' + (feature.properties['Visible'] !== null ? autolinker.link(feature.properties['Visible'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>fid</strong><br />' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">fid</th>\
+                        <td>' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>Edition</strong><br />' + (feature.properties['Edition'] !== null ? autolinker.link(feature.properties['Edition'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">Edition</th>\
+                        <td>' + (feature.properties['Edition'] !== null ? autolinker.link(feature.properties['Edition'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2"><strong>address</strong><br />' + (feature.properties['address'] !== null ? autolinker.link(feature.properties['address'].toLocaleString()) : '') + '</td>\
+                        <th scope="row">address</th>\
+                        <td>' + (feature.properties['address'] !== null ? autolinker.link(feature.properties['address'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
@@ -190,15 +197,8 @@
         bounds_group.addLayer(layer_contracts_bound_polyall_4);
         map.addLayer(layer_contracts_bound_polyall_4);
         var baseMaps = {};
-        L.control.layers(baseMaps,{'<img src="legend/contracts_bound_polyall_4.png" /> contracts_bound_poly all': layer_contracts_bound_polyall_4,"ESRI Shaded Relief": layer_ESRIShadedRelief_3,"JICA 100K Online": layer_JICA100KOnline_2,"Open Street Map": layer_OpenStreetMap_1,"Google Hybrid": layer_GoogleHybrid_0,},{collapsed:false}).addTo(map);
+        L.control.layers(baseMaps,{'<img src="legend/contracts_bound_polyall_4.png" /> contracts_bound_poly all': layer_contracts_bound_polyall_4,"ESRI Shaded Relief": layer_ESRIShadedRelief_3,"JICA 100K Online": layer_JICA100KOnline_2,"Open Street Map": layer_OpenStreetMap_1,"Google Hybrid": layer_GoogleHybrid_0,}).addTo(map);
         setBounds();
-        map.addControl(new L.Control.Search({
-            layer: layer_contracts_bound_polyall_4,
-            initial: false,
-            hideMarkerOnCollapse: true,
-            propertyName: 'title'}));
-        document.getElementsByClassName('search-button')[0].className +=
-         ' fa fa-binoculars';
         </script>
     </body>
 </html>
