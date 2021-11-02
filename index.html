@@ -44,7 +44,16 @@
             zoomControl:true, maxZoom:22, minZoom:1
         }).fitBounds([[10.98583974651238,104.79370455875822],[11.4768486204782,105.37856009302281]]);
         var hash = new L.Hash(map);
-        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+
+        function html_href(text, url, description) {
+            return ' <a href="'+ url +'" title="'+ description +'">'+text+'</a> ';
+        }
+        var middot = ' &middot; ';
+        var attributionHref = html_href('MOE/EIA', 'https://moe.gov.kh', 'Department of Environmental Impact Assessment');
+        attributionHref += middot + html_href('Leaflet', 'https://leafletjs.com', 'A JS library for interactive maps');
+        attributionHref += middot + html_href('QGIS', 'https://qgis.org', 'QGIS');
+        
+        map.attributionControl.setPrefix(attributionHref);
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         var measureControl = new L.Control.Measure({
             position: 'topleft',
@@ -159,105 +168,75 @@
         });
         layer_Apple_7;
 
+        function en2kh(en) {
+            var khm = '០១២៣៤៥៦៧៨៩';
+            var eng = '0123456789';
+            kh = en;
+            for (let i = 0; i < eng.length; i++) {
+                kh = kh.replaceAll(eng[i], khm[i]);
+            }
+            return kh;
+        }
+        function format_date(date) {
+            var parts = date.split('-');
+            if(parts.length !==3) return date;
+            return parts[2] + '-' + parts[1] + '-' + parts[0];
+        }
+
+        function html_row(header, value, prefix) {
+            return '<tr>\
+                        <th scope="row">' + header + '</th>\
+                        <td>' + value + prefix + '</td>\
+                    </tr>\n';
+        }
+
+        function row(feature, property_name, title, prefix = '') {
+            var value = feature.properties[property_name];
+            return  value !== null ? html_row(title, value, prefix) : '';
+        }
+
+        function row_kh(feature, property_name, title, prefix = '') {
+            var value = feature.properties[property_name];
+            if(value == null) return '';
+            return  html_row(title, en2kh(value), prefix);
+        }
+
+        function row_date(feature, property_name, title, prefix = '') {
+            var value = feature.properties[property_name];
+            if(value == null) return '';
+            value = format_date(value);
+            return  html_row(title, en2kh(value), prefix);
+        }
+
         function create_table(feature) {
-            return '<table>\
-                    <tr>\
-                        <th scope="row">Owner KH</th>\
-                        <td>' + (feature.properties['owner_kh'] !== null ? autolinker.link(feature.properties['owner_kh'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Owner EN</th>\
-                        <td>' + (feature.properties['owner_en'] !== null ? autolinker.link(feature.properties['owner_en'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Type</th>\
-                        <td>' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Size</th>\
-                        <td>' + (feature.properties['area_li_ha'] !== null ? autolinker.link(feature.properties['area_li_ha'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">License</th>\
-                        <td>' + (feature.properties['lic_type'] !== null ? autolinker.link(feature.properties['lic_type'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Provice</th>\
-                        <td>' + (feature.properties['loc_khet'] !== null ? autolinker.link(feature.properties['loc_khet'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">District</th>\
-                        <td>' + (feature.properties['loc_srok'] !== null ? autolinker.link(feature.properties['loc_srok'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Commune</th>\
-                        <td>' + (feature.properties['loc_khum'] !== null ? autolinker.link(feature.properties['loc_khum'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Village</th>\
-                        <td>' + (feature.properties['loc_phum'] !== null ? autolinker.link(feature.properties['loc_phum'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Location Name</th>\
-                        <td>' + (feature.properties['loc_name'] !== null ? autolinker.link(feature.properties['loc_name'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Other Name</th>\
-                        <td>' + (feature.properties['loc_other'] !== null ? autolinker.link(feature.properties['loc_other'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">lic_date</th>\
-                        <td>' + (feature.properties['lic_date'] !== null ? autolinker.link(feature.properties['lic_date'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">lic_number</th>\
-                        <td>' + (feature.properties['lic_number'] !== null ? autolinker.link(feature.properties['lic_number'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">lic_expiry</th>\
-                        <td>' + (feature.properties['lic_expiry'] !== null ? autolinker.link(feature.properties['lic_expiry'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">lic2_date</th>\
-                        <td>' + (feature.properties['lic2_date'] !== null ? autolinker.link(feature.properties['lic2_date'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">lic2_num</th>\
-                        <td>' + (feature.properties['lic2_num'] !== null ? autolinker.link(feature.properties['lic2_num'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">lic2_exp</th>\
-                        <td>' + (feature.properties['lic2_exp'] !== null ? autolinker.link(feature.properties['lic2_exp'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">status</th>\
-                        <td>' + (feature.properties['status'] !== null ? autolinker.link(feature.properties['status'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">team</th>\
-                        <td>' + (feature.properties['team'] !== null ? autolinker.link(feature.properties['team'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">added_by</th>\
-                        <td>' + (feature.properties['added_by'] !== null ? autolinker.link(feature.properties['added_by'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">edited_by</th>\
-                        <td>' + (feature.properties['edited_by'] !== null ? autolinker.link(feature.properties['edited_by'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Reference</th>\
-                        <td>' + (feature.properties['reference'] !== null ? autolinker.link(feature.properties['reference'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Code</th>\
-                        <td>' + (feature.properties['pro_code'] !== null ? autolinker.link(feature.properties['pro_code'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Remark</th>\
-                        <td>' + (feature.properties['remark'] !== null ? autolinker.link(feature.properties['remark'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table>';
+            var table = '<table>\n';
+                table += row(feature, 'owner_kh',   'Owner KH');
+                table += row(feature, 'owner_en',   'Owner EN');
+                table += row(feature, 'type',       'Type');
+                table += row(feature, 'area_li_ha', 'Size', ' Ha');
+                table += row(feature, 'lic_type',   'License');
+                table += row(feature, 'loc_khet',   'Provice');
+                table += row(feature, 'loc_srok',   'District');
+                table += row(feature, 'loc_khum',   'Commune');
+                table += row(feature, 'loc_phum',   'Village');
+                table += row(feature, 'loc_name',   'Location Name');
+                //table += row(feature, 'loc_other',  'Other Name');
+                table += row_date(feature, 'lic_date',   'Issued');
+                table += row_kh(feature, 'lic_number', 'Number', ' សជណ.បស្ថ');
+                // table += row(feature, 'lic_expiry', 'lic_expiry');
+                // table += row(feature, 'lic2_date',  'lic2_date');
+                // table += row(feature, 'lic2_num',   'lic2_num', ' សជណ.បស្ថ');
+                // table += row(feature, 'lic2_exp',   'lic2_exp');
+                table += row(feature, 'status',     'Status');
+                table += row(feature, 'team',       'Team');
+                table += row(feature, 'added_by',   'Added by');
+                table += row(feature, 'edited_by',  'Edited by');
+                table += row(feature, 'reference',  'Reference');
+                table += row(feature, 'pro_code',   'Code');
+                table += row(feature, 'remark',     'Remark');
+                table += '</table>';
+
+                return table;
         }
 
         function pop_All_8(feature, layer) {
